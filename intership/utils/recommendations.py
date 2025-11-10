@@ -1,5 +1,6 @@
 # utils/recommendations.py - Recommendation algorithms
 from .database import get_db
+import re
 
 def get_recommendations(user_id):
     """Get personalized internship recommendations for a user."""
@@ -28,6 +29,40 @@ def get_recommendations(user_id):
 
 def content_based_recommendations(user_id, irs):
     """Content-based recommendation algorithm using skill matching."""
+    def normalize_skills(raw_value):
+        """Normalize a raw skills string into a clean set of canonical skills."""
+        if not raw_value:
+            return set()
+        # Split on commas, semicolons, slashes, pipes, or any whitespace
+        # This handles inputs like "Python, React, Java" and "Python React Java"
+        tokens = re.split(r"[,\;/\|\s]+", str(raw_value))
+        normalized = set()
+        alias_map = {
+            'js': 'javascript',
+            'node.js': 'node',
+            'nodejs': 'node',
+            'reactjs': 'react',
+            'react.js': 'react',
+            'py': 'python',
+            'sql db': 'sql',
+            'postgre': 'postgresql',
+            'postgres': 'postgresql',
+            'ui/ux': 'uiux',
+            'c sharp': 'c#',
+            'c-sharp': 'c#',
+            'cpp': 'c++',
+        }
+        for t in tokens:
+            skill = t.strip().lower()
+            if not skill:
+                continue
+            # Remove trailing periods and extra spaces
+            skill = skill.strip(". ").replace("&", "and")
+            # Canonicalize some common variants
+            skill = alias_map.get(skill, skill)
+            normalized.add(skill)
+        return normalized
+
     # Get student's skills
     irs.execute("SELECT skills FROM profiles WHERE user_id=?", (user_id,))
     profile = irs.fetchone()
@@ -35,7 +70,7 @@ def content_based_recommendations(user_id, irs):
     if not profile or not profile['skills']:
         return []
     
-    student_skills = set(skill.strip().lower() for skill in profile['skills'].split(','))
+    student_skills = normalize_skills(profile['skills'])
     
     # Get all internships
     irs.execute("SELECT * FROM internships")
@@ -44,17 +79,29 @@ def content_based_recommendations(user_id, irs):
     # Calculate similarity for each internship
     recommendations = []
     for internship in internships:
-        required_skills = set(skill.strip().lower() for skill in internship['required_skills'].split(',')) if internship['required_skills'] else set()
+        required_skills = normalize_skills(internship['required_skills']) if internship['required_skills'] else set()
         
         if not required_skills:
             continue
             
-        # Jaccard similarity
-        intersection = len(student_skills & required_skills)
-        union = len(student_skills | required_skills)
-        similarity = intersection / union if union > 0 else 0
+        # Blended similarity emphasizing required skill coverage
+        intersection_count = len(student_skills & required_skills)
+        union_count = len(student_skills | required_skills)
+        jaccard = (intersection_count / union_count) if union_count > 0 else 0.0
+        coverage_required = (intersection_count / len(required_skills)) if len(required_skills) > 0 else 0.0
+        coverage_student = (intersection_count / len(student_skills)) if len(student_skills) > 0 else 0.0
+
+        # Weighted blend to improve perceived accuracy:
+        # - required coverage: primary (meets job requirements)
+        # - jaccard: secondary (overall overlap considering list sizes)
+        # - student coverage: slight bonus (how much of student's skills are utilized)
+        similarity = 0.6 * coverage_required + 0.3 * jaccard + 0.1 * coverage_student
+
+        # If all required skills are satisfied, force a perfect match
+        if coverage_required == 1.0 and len(required_skills) > 0:
+            similarity = 1.0
         
-        if similarity > 0.2:  # Threshold
+        if similarity >= 0.25:  # Slightly higher threshold after more precise scoring
             # Get company information
             irs.execute("SELECT name FROM users WHERE id=?", (internship['company_id'],))
             company = irs.fetchone()
@@ -68,7 +115,7 @@ def content_based_recommendations(user_id, irs):
                 'posted_at': internship['posted_at'],
                 'company_name': company_name,
                 'company_id': internship['company_id'],
-                'similarity': similarity,
+                'similarity': round(similarity, 4),
                 'type': 'Content-based'
             })
     
@@ -159,7 +206,8 @@ def hybrid_recommendations(user_id, content_weight=0.6, collab_weight=0.4):
             'data': rec,
             'content_score': rec['similarity'],
             'collab_score': 0,
-            'combined_score': rec['similarity'] * content_weight,
+            # If only content exists, use the raw content score (not weighted down)
+            'combined_score': rec['similarity'],
             'sources': ['content']
         }
     
@@ -169,6 +217,7 @@ def hybrid_recommendations(user_id, content_weight=0.6, collab_weight=0.4):
         if internship_id in hybrid_scores:
             # Update existing with collaborative score
             hybrid_scores[internship_id]['collab_score'] = rec['similarity']
+            # If we have both signals, apply weighted combination
             hybrid_scores[internship_id]['combined_score'] = (
                 hybrid_scores[internship_id]['content_score'] * content_weight +
                 rec['similarity'] * collab_weight
@@ -180,7 +229,8 @@ def hybrid_recommendations(user_id, content_weight=0.6, collab_weight=0.4):
                 'data': rec,
                 'content_score': 0,
                 'collab_score': rec['similarity'],
-                'combined_score': rec['similarity'] * collab_weight,
+                # If only collaborative exists, use the raw collaborative score (not weighted down)
+                'combined_score': rec['similarity'],
                 'sources': ['collaborative']
             }
     
