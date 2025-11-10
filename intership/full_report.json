@@ -1,0 +1,224 @@
+{
+  "timestamp": "2025-11-09T09:09:24.836419",
+  "algorithms": {
+    "content_based": {
+      "precision": {
+        "5": 0.1142857142857143,
+        "10": 0.05714285714285715,
+        "20": 0.028571428571428574
+      },
+      "recall": {
+        "5": 0.33333333333333337,
+        "10": 0.33333333333333337,
+        "20": 0.33333333333333337
+      },
+      "ndcg": {
+        "5": 0.2754379666612356,
+        "10": 0.2754379666612356,
+        "20": 0.2754379666612356
+      },
+      "map": {
+        "5": 0.21825396825396823,
+        "10": 0.21825396825396823,
+        "20": 0.21825396825396823
+      }
+    },
+    "collaborative_filtering": {
+      "precision": {
+        "5": 0.0,
+        "10": 0.0,
+        "20": 0.0
+      },
+      "recall": {
+        "5": 0.0,
+        "10": 0.0,
+        "20": 0.0
+      },
+      "ndcg": {
+        "5": 0.0,
+        "10": 0.0,
+        "20": 0.0
+      },
+      "map": {
+        "5": 0.0,
+        "10": 0.0,
+        "20": 0.0
+      }
+    },
+    "hybrid": {
+      "precision": {
+        "5": 0.1142857142857143,
+        "10": 0.05714285714285715,
+        "20": 0.028571428571428574
+      },
+      "recall": {
+        "5": 0.33333333333333337,
+        "10": 0.33333333333333337,
+        "20": 0.33333333333333337
+      },
+      "ndcg": {
+        "5": 0.2754379666612356,
+        "10": 0.2754379666612356,
+        "20": 0.2754379666612356
+      },
+      "map": {
+        "5": 0.21825396825396823,
+        "10": 0.21825396825396823,
+        "20": 0.21825396825396823
+      }
+    }
+  },
+  "comparison": {
+    "precision": {
+      "5": {
+        "content_based": 0.1142857142857143,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.1142857142857143,
+        "best_algorithm": "content_based"
+      },
+      "10": {
+        "content_based": 0.05714285714285715,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.05714285714285715,
+        "best_algorithm": "content_based"
+      },
+      "20": {
+        "content_based": 0.028571428571428574,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.028571428571428574,
+        "best_algorithm": "content_based"
+      }
+    },
+    "recall": {
+      "5": {
+        "content_based": 0.33333333333333337,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.33333333333333337,
+        "best_algorithm": "content_based"
+      },
+      "10": {
+        "content_based": 0.33333333333333337,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.33333333333333337,
+        "best_algorithm": "content_based"
+      },
+      "20": {
+        "content_based": 0.33333333333333337,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.33333333333333337,
+        "best_algorithm": "content_based"
+      }
+    },
+    "ndcg": {
+      "5": {
+        "content_based": 0.2754379666612356,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.2754379666612356,
+        "best_algorithm": "content_based"
+      },
+      "10": {
+        "content_based": 0.2754379666612356,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.2754379666612356,
+        "best_algorithm": "content_based"
+      },
+      "20": {
+        "content_based": 0.2754379666612356,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.2754379666612356,
+        "best_algorithm": "content_based"
+      }
+    },
+    "map": {
+      "5": {
+        "content_based": 0.21825396825396823,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.21825396825396823,
+        "best_algorithm": "content_based"
+      },
+      "10": {
+        "content_based": 0.21825396825396823,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.21825396825396823,
+        "best_algorithm": "content_based"
+      },
+      "20": {
+        "content_based": 0.21825396825396823,
+        "collaborative_filtering": 0.0,
+        "hybrid": 0.21825396825396823,
+        "best_algorithm": "content_based"
+      }
+    }
+  },
+  "summary": {
+    "best_overall": {
+      "precision": {
+        "5": {
+          "algorithm": "content_based",
+          "score": 0.1142857142857143
+        },
+        "10": {
+          "algorithm": "content_based",
+          "score": 0.05714285714285715
+        },
+        "20": {
+          "algorithm": "content_based",
+          "score": 0.028571428571428574
+        }
+      },
+      "recall": {
+        "5": {
+          "algorithm": "content_based",
+          "score": 0.33333333333333337
+        },
+        "10": {
+          "algorithm": "content_based",
+          "score": 0.33333333333333337
+        },
+        "20": {
+          "algorithm": "content_based",
+          "score": 0.33333333333333337
+        }
+      },
+      "ndcg": {
+        "5": {
+          "algorithm": "content_based",
+          "score": 0.2754379666612356
+        },
+        "10": {
+          "algorithm": "content_based",
+          "score": 0.2754379666612356
+        },
+        "20": {
+          "algorithm": "content_based",
+          "score": 0.2754379666612356
+        }
+      },
+      "map": {
+        "5": {
+          "algorithm": "content_based",
+          "score": 0.21825396825396823
+        },
+        "10": {
+          "algorithm": "content_based",
+          "score": 0.21825396825396823
+        },
+        "20": {
+          "algorithm": "content_based",
+          "score": 0.21825396825396823
+        }
+      }
+    },
+    "recommendations": [
+      "Hybrid performs best for PRECISION@5",
+      "Hybrid performs best for PRECISION@10",
+      "Hybrid performs best for PRECISION@20",
+      "Hybrid performs best for RECALL@5",
+      "Hybrid performs best for RECALL@10",
+      "Hybrid performs best for RECALL@20",
+      "Hybrid performs best for NDCG@5",
+      "Hybrid performs best for NDCG@10",
+      "Hybrid performs best for NDCG@20"
+    ]
+  }
+}
