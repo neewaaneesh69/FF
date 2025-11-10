@@ -256,7 +256,16 @@ def hybrid_recommendations(user_id, content_weight=0.6, collab_weight=0.4):
         recommendations.append(rec_data)
     
     # Sort by combined similarity score
-    recommendations.sort(key=lambda x: x['similarity'], reverse=True)
+    def algo_priority(rec):
+        # Hybrid first (0), then Content-Based (1), then Collaborative (2)
+        rec_type = rec.get('type') or rec.get('algorithm') or ''
+        if rec_type.lower() == 'hybrid':
+            return 0
+        if rec_type.lower() in ('content-based', 'content'):
+            return 1
+        return 2  # collaborative or unknown
+
+    recommendations.sort(key=lambda x: (algo_priority(x), -x['similarity']))
     return recommendations[:10]  # Return top 10 hybrid recommendations
 
 
